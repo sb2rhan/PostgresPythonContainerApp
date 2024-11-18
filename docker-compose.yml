@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    container_name: PostgresDBMS
+    ports:
+        - "5432:5432"
+    volumes:
+        - ./db:/var/lib/postgresql/data
+        - ./init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 9765229
+        POSTGRES_DB: healthreportsystemdb
+
+  script:
+    platform: linux/amd64
+    depends_on:
+      - db
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+
+volumes:
+  db:
+    driver: local
